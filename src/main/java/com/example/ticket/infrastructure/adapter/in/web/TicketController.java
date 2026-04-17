@@ -1,6 +1,5 @@
 package com.example.ticket.infrastructure.adapter.in.web;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,9 +67,10 @@ public class TicketController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/db/{id}/estado")
-    public ResponseEntity<String> consultarEstadoDb(@PathVariable Long id) {
-        EstadoTicket estado = consultarEstadoTicketDbUseCase.consultarEstado(id);
+    // Fix: manejo de ticket inexistente
+    @GetMapping("/{id}/estado")
+    public ResponseEntity<String> consultarEstado(@PathVariable Long id) {
+        EstadoTicket estado = consultarEstadoTicketUseCase.consultarEstado(id);
         return ResponseEntity.ok(estado.name());
     }
 }
