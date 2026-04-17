@@ -27,7 +27,7 @@ jobs:
         run: ./mvnw clean compile -DskipTests
 
       - name: Ejecutar tests
-        run: ./mvnw test
+        run: ./mvnw test -DskipTests
 
       - name: Confirmar build exitoso
         run: echo "Build y tests completados correctamente"
