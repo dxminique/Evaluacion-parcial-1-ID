@@ -323,9 +323,17 @@ El archivo de configuración se encuentra en `.github/workflows/ci.yml`.
 Durante el desarrollo de este encargo se utilizó **Claude (Anthropic)** como herramienta de apoyo para:
 
 - Revisión y mejora de redacción del README
-- Generación de la estructura base del workflow de GitHub Actions
 - Consultas sobre convenciones de GitFlow
+- Generación de la estructura base del workflow de GitHub Actions
 
 Todas las decisiones técnicas, justificaciones y reflexiones fueron elaboradas por el equipo. El contenido generado por IA fue revisado, validado y adaptado al contexto del proyecto.
 
 > Referencia de citación: https://bibliotecas.duoc.cl/ia
+
+> ## Reflexiones Individuales
+
+### Integrante 1 — Dominique Cofre
+Aprendi a usar el gitflow para el trabjo en equipo, a ocupar distintas ramas para el desarrollo del proyecto,Lo más desafiante fue resolver los conflictos al realizar los pull requests entre ramas, ya que requería entender qué cambios conservar. También tuve dificultades configurando el workflow de GitHub Actions, principalmente con los permisos del archivo mvnw y la conexión con la base de datos, pero logré resolverlo aplicando los conocimientos del curso.
+
+### Integrante 2 — Hector Peña
+..
