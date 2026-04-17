@@ -1,5 +1,6 @@
 package com.example.ticket.infrastructure.adapter.in.web;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,18 +18,27 @@ import com.example.ticket.domain.port.in.RegistrarTicketUseCase;
 @RequestMapping("/tickets")
 public class TicketController {
 
-    private final RegistrarTicketUseCase registrarTicketUseCase;
-    private final ConsultarEstadoTicketUseCase consultarEstadoTicketUseCase;
+    private final RegistrarTicketUseCase registrarTicketDbUseCase;
+    private final RegistrarTicketUseCase registrarTicketTxtUseCase;
+    private final ConsultarEstadoTicketUseCase consultarEstadoTicketDbUseCase;
 
-    public TicketController(RegistrarTicketUseCase registrarTicketUseCase,
-                            ConsultarEstadoTicketUseCase consultarEstadoTicketUseCase) {
-        this.registrarTicketUseCase = registrarTicketUseCase;
-        this.consultarEstadoTicketUseCase = consultarEstadoTicketUseCase;
+    public TicketController(
+            @Qualifier("registrarTicketDbUseCase") RegistrarTicketUseCase registrarTicketDbUseCase,
+            @Qualifier("registrarTicketTxtUseCase") RegistrarTicketUseCase registrarTicketTxtUseCase,
+            @Qualifier("consultarEstadoTicketDbUseCase") ConsultarEstadoTicketUseCase consultarEstadoTicketDbUseCase
+    ) {
+        this.registrarTicketDbUseCase = registrarTicketDbUseCase;
+        this.registrarTicketTxtUseCase = registrarTicketTxtUseCase;
+        this.consultarEstadoTicketDbUseCase = consultarEstadoTicketDbUseCase;
     }
+    // Endpoint para registrar ticket en base de datos
+    @PostMapping("/db")
+    public ResponseEntity<TicketResponse> registrarDb(@RequestBody CrearTicketRequest request) {
 
-    @PostMapping
-    public ResponseEntity<TicketResponse> registrar(@RequestBody CrearTicketRequest request) {
-        Ticket ticket = registrarTicketUseCase.registrar(request.getTitulo(), request.getDescripcion());
+        Ticket ticket = registrarTicketDbUseCase.registrar(
+                request.getTitulo(),
+                request.getDescripcion()
+        );
 
         TicketResponse response = new TicketResponse(
                 ticket.getId(),
@@ -39,10 +49,28 @@ public class TicketController {
 
         return ResponseEntity.ok(response);
     }
-    // Endpoint para consultar el estado de un ticket por ID
-    @GetMapping("/{id}/estado")
-    public ResponseEntity<String> consultarEstado(@PathVariable Long id) {
-        EstadoTicket estado = consultarEstadoTicketUseCase.consultarEstado(id);
+
+    @PostMapping("/txt")
+    public ResponseEntity<TicketResponse> registrarTxt(@RequestBody CrearTicketRequest request) {
+
+        Ticket ticket = registrarTicketTxtUseCase.registrar(
+                request.getTitulo(),
+                request.getDescripcion()
+        );
+
+        TicketResponse response = new TicketResponse(
+                ticket.getId(),
+                ticket.getTitulo(),
+                ticket.getDescripcion(),
+                ticket.getEstado()
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/db/{id}/estado")
+    public ResponseEntity<String> consultarEstadoDb(@PathVariable Long id) {
+        EstadoTicket estado = consultarEstadoTicketDbUseCase.consultarEstado(id);
         return ResponseEntity.ok(estado.name());
     }
 }
