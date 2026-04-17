@@ -17,18 +17,45 @@ import com.example.ticket.domain.port.in.RegistrarTicketUseCase;
 @RequestMapping("/tickets")
 public class TicketController {
 
-    private final RegistrarTicketUseCase registrarTicketUseCase;
-    private final ConsultarEstadoTicketUseCase consultarEstadoTicketUseCase;
+    private final RegistrarTicketUseCase registrarTicketDbUseCase;
+    private final RegistrarTicketUseCase registrarTicketTxtUseCase;
+    private final ConsultarEstadoTicketUseCase consultarEstadoTicketDbUseCase;
 
-    public TicketController(RegistrarTicketUseCase registrarTicketUseCase,
-                            ConsultarEstadoTicketUseCase consultarEstadoTicketUseCase) {
-        this.registrarTicketUseCase = registrarTicketUseCase;
-        this.consultarEstadoTicketUseCase = consultarEstadoTicketUseCase;
+    public TicketController(
+            @Qualifier("registrarTicketDbUseCase") RegistrarTicketUseCase registrarTicketDbUseCase,
+            @Qualifier("registrarTicketTxtUseCase") RegistrarTicketUseCase registrarTicketTxtUseCase,
+            @Qualifier("consultarEstadoTicketDbUseCase") ConsultarEstadoTicketUseCase consultarEstadoTicketDbUseCase
+    ) {
+        this.registrarTicketDbUseCase = registrarTicketDbUseCase;
+        this.registrarTicketTxtUseCase = registrarTicketTxtUseCase;
+        this.consultarEstadoTicketDbUseCase = consultarEstadoTicketDbUseCase;
+    }
+    // Endpoint para registrar ticket en base de datos
+    @PostMapping("/db")
+    public ResponseEntity<TicketResponse> registrarDb(@RequestBody CrearTicketRequest request) {
+
+        Ticket ticket = registrarTicketDbUseCase.registrar(
+                request.getTitulo(),
+                request.getDescripcion()
+        );
+
+        TicketResponse response = new TicketResponse(
+                ticket.getId(),
+                ticket.getTitulo(),
+                ticket.getDescripcion(),
+                ticket.getEstado()
+        );
+
+        return ResponseEntity.ok(response);
     }
 
-    @PostMapping
-    public ResponseEntity<TicketResponse> registrar(@RequestBody CrearTicketRequest request) {
-        Ticket ticket = registrarTicketUseCase.registrar(request.getTitulo(), request.getDescripcion());
+    @PostMapping("/txt")
+    public ResponseEntity<TicketResponse> registrarTxt(@RequestBody CrearTicketRequest request) {
+
+        Ticket ticket = registrarTicketTxtUseCase.registrar(
+                request.getTitulo(),
+                request.getDescripcion()
+        );
 
         TicketResponse response = new TicketResponse(
                 ticket.getId(),

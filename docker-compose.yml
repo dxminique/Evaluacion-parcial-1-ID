@@ -6,21 +6,39 @@ services:
       MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: ticketdb
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
-  app:
-    build: .
-    container_name: ticket-app
+  ticket:
+    build:
+      context: ./ticket
+    container_name: ticket-write
     depends_on:
       - mysql
     ports:
-      - "8081:8081"
+      - "8082:8081"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ticketdb?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ticketdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SERVER_PORT: 8081
+
+  ticket-read:
+    build:
+      context: ./ticket-read
+    container_name: ticket-read
+    depends_on:
+      - mysql
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ticketdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      SERVER_PORT: 8083
 
 volumes:
   mysql_data:
