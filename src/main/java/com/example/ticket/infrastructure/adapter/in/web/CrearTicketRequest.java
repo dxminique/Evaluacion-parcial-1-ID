@@ -1,5 +1,6 @@
 package com.example.ticket.infrastructure.adapter.in.web;
 
+// Clase encargada de mapear los datos recibidos del frontend para generar un nuevo ticket
 public class CrearTicketRequest {
 
     private String titulo;
